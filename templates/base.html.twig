@@ -21,16 +21,19 @@
 		        <a class="nav-link" href="{{ path('home') }}">Home <span class="sr-only">(current)</span></a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="{{ path('bonjour') }}">Bonjour</a>
+		        <a class="nav-link" href="{{ path('addArticle') }}">Ajouter un article</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="{{ path('heure') }}">Lien vers la page quelle heure est-il ?</a>
+		        <a class="nav-link" href="{{ path('articles') }}">liste des articles</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="{{ path('bonjourNom', {nom: 'toto'}) }}">Lien vers la page bonjour Pseudo</a>
+		        <a class="nav-link" href="{{ path('heure') }}">Heure ?</a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="{{ path('exo3', {age: 21, pseudo: 'tata'}) }}">Lien vers la page exercice 3</a>
+		        <a class="nav-link" href="{{ path('bonjourNom', {nom: 'toto'}) }}">Bonjour Pseudo</a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="{{ path('exo3', {age: 21, pseudo: 'tata'}) }}">Exercice 3</a>
 		      </li>
 		  </ul>
 		</div>
