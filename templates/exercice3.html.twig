@@ -8,5 +8,6 @@
 
 {# si j'ai besoin de fichiers js propres à cette page  je déclare le block#}
 {% block javascripts %}
+{{ parent() }}
 <script src="{{ asset('js/jquery.ui.min.js') }}"></script>
 {% endblock %}

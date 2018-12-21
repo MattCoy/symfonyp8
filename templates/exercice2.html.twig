@@ -4,6 +4,12 @@
 
 {% block body %}
 	<h1>Quelle heure est-il?</h1>
+
+	{# affichage de la vue qui contient le code bonjour...
+		si mon template a besoin d'une variable, je la passe en paramètre d'include
+		#}
+	{{ include('inc/bonjour.html.twig', {pseudo : 'Matthieu'}) }}
+
 	<p>Bonjour, il est {{ heure }} et il est {{ date }}</p>
 	path() permet de générer dynamiquement le bon lien
 	<a href="{{ path('bonjour') }}">bonjour</a>
