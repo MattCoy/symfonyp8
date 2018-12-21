@@ -54,7 +54,7 @@ class HomeController extends AbstractController
 		Passer cette variable à une vue twig (par ex exercice.html.twig), pour qu'elle affiche la date
 		*/
 	/**
-	*@Route("/exercice2/heure")
+	*@Route("/exercice2/heure", name="heure")
 	*
 	*/
 	public function heure(){
@@ -87,5 +87,35 @@ class HomeController extends AbstractController
 		//pour faire une redirection :en paramètre le nom de la route vers laquelle on veut rediriger
 		return $this->redirectToRoute('home');
 	}
+
+	/*Créer une page  pour les url de type /exercice3/25/toto
+
+	Ou 25 est un placeholder qui représente un age (donc uniquement des chiffres) et toto un pseudo (donc uniquement des lettres)
+	Créer une vue (exercice3.html.twig) qui va afficher, Bonjour 'pseudo' tu as 'age' ans
+	Mettre an au singulier si age = 1*/
+
+	/**
+	*@Route("exercice3/{age}/{pseudo}", name="exo3", requirements={"age"="\d+", "pseudo"="[a-zA-Z]+"})
+	*
+	*/
+	public function exercice3($pseudo, $age){
+
+		return $this->render('exercice3.html.twig',
+								[
+									'age'=> $age,
+								 	'pseudo'=> $pseudo
+								]
+		);
+
+	}
+
+	/*Créer un menu, sur toutes les pages suivantes qui permette de naviguer entre elles
+	pages accessibles : 
+	 /
+	 /bonjour/
+	 /bonjour/toto
+	 /exercice1/comment-allez-vous
+	 /exercice2/heure
+	 /exercice3/33/toto*/
 
 }

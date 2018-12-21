@@ -6,6 +6,10 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+    	<a href="{{ path('bonjour') }}">Lien vers la page bonjour</a>
+		<a href="{{ path('heure') }}">Lien vers la page quelle heure est-il ?</a>
+		<a href="{{ path('bonjourNom', {nom: 'toto'}) }}">Lien vers la page bonjour Pseudo</a>
+		<a href="{{ path('exo3', {age: 21, pseudo: 'tata'}) }}">Lien vers la page exercice 3</a>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
