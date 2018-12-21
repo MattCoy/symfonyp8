@@ -118,4 +118,11 @@ class HomeController extends AbstractController
 	 /exercice2/heure
 	 /exercice3/33/toto*/
 
+	 /*
+
+	 faire en sorte que toutes les pages héritent de notre layout (layout.html.twig)
+et utilisent à bootstrap et jquery (les fichiers, pas le cdn)
+
+*/
+
 }

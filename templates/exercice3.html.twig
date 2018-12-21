@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+{% extends 'base.html.twig' %}
+
+{% block title %}Bonjour avec pseudo et âge{% endblock %}
+
+{% block body %}
 	Bonjour {{ pseudo }}, tu as {{ age }} an{% if age > 1 %}s{% endif %}
-	<a href="{{ path('bonjour') }}">Lien vers la page bonjour</a>
-	<a href="{{ path('heure') }}">Lien vers la page quelle heure est-il ?</a>
-	<a href="{{ path('bonjourNom', {nom: 'toto'}) }}">Lien vers la page bonjour Pseudo</a>
-	<a href="{{ path('exo3', {age: 21, pseudo: 'tata'}) }}">Lien vers la page exercice 3</a>
-</body>
-</html>
+{% endblock %}
+
+{# si j'ai besoin de fichiers js propres à cette page  je déclare le block#}
+{% block javascripts %}
+<script src="{{ asset('js/jquery.ui.min.js') }}"></script>
+{% endblock %}

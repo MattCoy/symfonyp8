@@ -1,9 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+{#
+le mot clé extends permet de faire hériter notre vue du layout
+Comme pour les classes, une vue ne peut hériter que d'un layout
+Par contre, une vue peut hériter d'une autre vue qui peut hériter elle même d'une autre vue
+Twig va chercher directement les vues dans templates/
+mon fichier base.html.twig se situe à la racine de templates/
+#}
+{% extends 'base.html.twig' %}
+
+{# je défini les blocks et leur contenu #}
+
+{% block title %}Page d'accueil{% endblock %}
+
+{% block body %}
 	<h1>page d'accueil</h1>
 	<p>Ceci est la page d'accueil du site</p>
 
@@ -26,10 +34,4 @@
 	#}
 
 	Bonjour {{ nom }}
-	
-	<a href="{{ path('bonjour') }}">Lien vers la page bonjour</a>
-	<a href="{{ path('heure') }}">Lien vers la page quelle heure est-il ?</a>
-	<a href="{{ path('bonjourNom', {nom: 'toto'}) }}">Lien vers la page bonjour Pseudo</a>
-	<a href="{{ path('exo3', {age: 21, pseudo: 'tata'}) }}">Lien vers la page exercice 3</a>
-</body>
-</html>
+{% endblock %}

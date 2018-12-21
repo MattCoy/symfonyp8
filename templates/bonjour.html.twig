@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+{% extends 'base.html.twig' %}
+
+{% block title %}Bonjour {{ pseudo }}{% endblock %}
+
+{% block body %}
 	<h1>Bonjour pseudo</h1>
 	<p>Bonjour {{ pseudo }}</p>
-
-	
-</body>
-</html>
+{% endblock %}

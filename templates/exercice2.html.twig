@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+{% extends 'base.html.twig' %}
+
+{% block title %}Nous sommes le {{ date }}{% endblock %}
+
+{% block body %}
 	<h1>Quelle heure est-il?</h1>
 	<p>Bonjour, il est {{ heure }} et il est {{ date }}</p>
 	path() permet de générer dynamiquement le bon lien
 	<a href="{{ path('bonjour') }}">bonjour</a>
 	on peut passer des paramètres à notre route
 	<a href="{{ path('bonjourNom', {nom: 'titi'}) }}">bonjour pseudo</a>
-	
-</body>
-</html>
+{% endblock %}
