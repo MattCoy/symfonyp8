@@ -3,6 +3,16 @@
 {% block title %}Liste des articles{% endblock %}
 
 {% block body %}
+
+	{# affichage des éventuels messages flash #}
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success">
+			{{ message }}
+		</div>
+	{% endfor %}
+
+HHHHHHHHHHHHHHHH
+
 	<article>
 		<h3>{{ article.title }}</h3>
 		publié le {{ article.datepubli|date('d/m/Y') }} par {{ article.author }}

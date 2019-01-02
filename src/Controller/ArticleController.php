@@ -72,4 +72,66 @@ class ArticleController extends AbstractController
 
     }
 
+    /**
+    *@Route("/article/recent", name="showRecentArticles")
+    */
+    public function showRecent(){
+
+        $repository = $this->getDoctrine()->getRepository(Article::class);
+        //requête SQL :  articles est un tableau de tableaux
+        $articles = $repository->findAllPostedAfter('2000-01-01');
+        //requête objet :articles2 est un tableau d'objets
+        $articles2 = $repository->findAllPostedAfter2('2000-01-01');
+
+        return $this->render('article/recent.html.twig', 
+            ['articles'=>$articles, 'articles2' => $articles2]);
+
+    }
+
+    /**
+    *@Route("article/update/{id}", name="updateArticle", requirements={"id"="\d+"})
+    */
+    public function updateArticle($id){
+
+        $repository = $this->getDoctrine()->getRepository(Article::class);
+        $article = $repository->find($id);
+
+        if(!$article){
+            throw $this->createNotFoundException('no article found');
+        }
+
+        $article->setContent('contenu modifié');
+
+        //récupréation de l'entity manager pour pouvoir faire l'update
+        $entityManager = $this->getDoctrine()->getManager();
+        //pas besoin de faire ->persist($article) car l'article a été récupéré de la base, doctrine le connait déjà
+        $entityManager->flush();
+
+        //création d'un message flash : stocké dans la session il sera supprimé dès qu'il sera affiché : donc affiché qu'une seule fois
+        $this->addFlash('success', 'article modifié');
+
+        //je redirige vers la page détail de l'article
+        return $this->redirectToRoute('showArticle', ['id'=>$article->getId()]);
+
+    }
+
+    /**
+    *@Route("/article/delete/{id}", name="deleteArticle", requirements={"id"="\d+"})
+    *Le param converter : on explique à Symfony que l'on veut convertir directement l'id en objet de classe Article en mettant le nom de la classe dans les parenthèses
+    */
+    public function deleteArticle(Article $article){
+
+        //récupération de l'entity manager, nécessaire pour la suppression
+       $entityManager = $this->getDoctrine()->getManager();
+       //je veux supprimer cet article
+       $entityManager->remove($article);
+       //pour valider la suppression
+       $entityManager->flush();
+
+       //génération d'un message flash
+       $this->addFlash('warning', 'Article supprimé');
+       //redirection vers la liste des articles
+       return $this->redirectToRoute('articles');
+    }
+
 }

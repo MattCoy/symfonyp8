@@ -47,4 +47,48 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /*
+    * Méthode qui va récupérer les articles dont la date de publication est plus récente 
+    * que la date donnée en paramètre 
+    * On peut faire cette requête en SQL "à l'ancienne" 
+    * @param $date_post string, la date au format datetime 
+    * @return array of arrays of article data 
+    */ 
+    public function findAllPostedAfter($datePost){
+
+        //on récupère l'équivalent de l'objet de connexion à pdo que l'on utilisait
+        $connexion = $this->getEntityManager()->getConnection();
+        //on stocke la requête dans une variable
+        $sql = '
+            SELECT * FROM article 
+            WHERE date_publi > :datePost 
+            ORDER BY date_publi DESC
+        ';
+        $select = $connexion->prepare($sql);
+        $select->bindValue(':datePost', $datePost);
+        $select->execute();
+
+        //je renvoie un tableau de tableaux d'articles
+        return $select->fetchAll();
+
+    }
+
+    /* 
+    * Cette Méthode fait la même chose que findAllPostedAfter() 
+    * mais on fait la requête en objet 
+    * @param $date_post string, la date au format datetime 
+    * @return array of article objects 
+    */
+    public function findAllPostedAfter2($datePost){
+
+        $queryBuilder = $this->createQueryBuilder('a')
+            ->andWhere('a.date_publi > :datePost')
+            ->setParameter('datePost', $datePost)
+            ->orderBy('a.date_publi', 'DESC')
+            ->getQuery();
+
+        return $queryBuilder->execute();
+
+    }
 }
