@@ -3,5 +3,8 @@
 {% block title %}Ajout d'article{% endblock %}
 
 {% block body %}
-Article ajouté!
+
+	{{ form_start(form) }}
+		{{ form_widget(form) }}
+	{{ form_end(form) }}
 {% endblock %}

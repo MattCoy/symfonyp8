@@ -5,6 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Article;
+use App\Form\ArticleType;
+use Symfony\Component\HttpFoundation\Request;
 
 class ArticleController extends AbstractController
 {
@@ -29,25 +31,32 @@ class ArticleController extends AbstractController
     /**
     *@Route("/article/add", name="addArticle")
     */
-    public function addArticle(){
+    public function addArticle(Request $request){
     	//pour pouvoir sauvegarder un objet = insérer les infos dans la table, on utilise l'entity manager
     	$entityManager = $this->getDoctrine()->getManager();
 
     	//on crée notre objet article, pour l'instant en dur
     	$article = new Article();
-    	$article->setTitle('mon premier article');
-    	$article->setContent('mkojhmjkhjmohioh iohmiohioh');
-    	//on doit envoyer un objet de classe datetime puisqu'on a créé notre propriété date_publi au format datetime
-    	$article->setDatePubli(new \DateTime(date('Y-m-d H:i:s')));
-    	$article->setAuthor('Moi');
+    	
+        $form = $this->createForm(ArticleType::class);
 
-    	//pour indiquer à doctrine de conserver l'objet, on doit le "persister"
-    	$entityManager->persist($article);
+        $form->handleRequest($request);
 
-    	// pour exécuter les requêtes sql
-    	$entityManager->flush();
+        if($form->isSubmitted() && $form->isValid()){
 
-    	return $this->render('article/add.html.twig');
+            $article = $form->getData();
+
+            $entityManager->persist($article);
+
+            $entityManager->flush();
+
+            $this->addFlash('success', 'article ajouté');
+
+            return $this->redirectToRoute('articles');
+
+        }
+
+    	return $this->render('article/add.html.twig', ['form' => $form->createView()]);
 
     }
 
@@ -91,28 +100,28 @@ class ArticleController extends AbstractController
     /**
     *@Route("article/update/{id}", name="updateArticle", requirements={"id"="\d+"})
     */
-    public function updateArticle($id){
+    public function updateArticle(Request $request, Article $article){
 
-        $repository = $this->getDoctrine()->getRepository(Article::class);
-        $article = $repository->find($id);
+        //pour pouvoir sauvegarder un objet = insérer les infos dans la table, on utilise l'entity manager
+        $entityManager = $this->getDoctrine()->getManager();
+        
+        $form = $this->createForm(ArticleType::class, $article);
 
-        if(!$article){
-            throw $this->createNotFoundException('no article found');
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            $article = $form->getData();
+
+            $entityManager->flush();
+
+            $this->addFlash('success', 'article modifié');
+
+            return $this->redirectToRoute('articles');
+
         }
 
-        $article->setContent('contenu modifié');
-
-        //récupréation de l'entity manager pour pouvoir faire l'update
-        $entityManager = $this->getDoctrine()->getManager();
-        //pas besoin de faire ->persist($article) car l'article a été récupéré de la base, doctrine le connait déjà
-        $entityManager->flush();
-
-        //création d'un message flash : stocké dans la session il sera supprimé dès qu'il sera affiché : donc affiché qu'une seule fois
-        $this->addFlash('success', 'article modifié');
-
-        //je redirige vers la page détail de l'article
-        return $this->redirectToRoute('showArticle', ['id'=>$article->getId()]);
-
+        return $this->render('article/add.html.twig', ['form' => $form->createView()]);
     }
 
     /**
