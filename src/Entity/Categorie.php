@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CategorieRepository")
@@ -18,11 +19,19 @@ class Categorie
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Assert\Length(
+     *   min = 3,
+     *   max = 30,
+     *   minMessage = "La catégorie doit faire au moins 3 caractères",
+     *   maxMessage = "La catégorie ne doit pas faire plus de 30 caractères"
+     * )
+     *
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank()
      */
     private $description;
 
