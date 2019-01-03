@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des messages{% endblock %}
+
+{% block body %}
+
+	{% for message in messages %}
+		<p>{{ message.sujet }}, envoyé le {{ message.dateenvoi|date('d/m/Y')}}
+			<a href="{{ path('message', {id: message.id}) }}">Voir</a>
+		</p>
+	{% endfor %}
+
+{% endblock %}
