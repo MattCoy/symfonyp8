@@ -22,4 +22,18 @@ class SecurityController extends AbstractController
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
+
+    /**
+    * @Route("/user/infos", name="userInfo")
+    */
+    public function showConnectedUser(){
+        //pour restreindre l'accès au contrôleur aux seuls utilisateurs connectés
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        //récupérer l'utilisateur connecté
+        $user = $this->getUser();
+        dump($user);
+
+        return $this->render('security/user.html.twig', ['moi' => $user ]);
+    }
 }
