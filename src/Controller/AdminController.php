@@ -5,6 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use App\Form\ArticleAdminType;
+use Symfony\Component\HttpFoundation\Request;
 
 class AdminController extends AbstractController
 {
@@ -45,5 +47,30 @@ class AdminController extends AbstractController
             'controller_name' => 'AdminController'
         ]);
 
+    }
+
+    /**
+    * @Route("admin/article/add", name="addArticleAdmin")
+    *
+    */
+    public function addArticle(Request $request)
+    {
+
+        $form = $this->createForm(ArticleAdminType::class);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            $article = $form->getData();
+
+            $entitymanager = $this->getDoctrine()->getManager();
+
+            $entitymanager->persist($article);
+
+            $entitymanager->flush();
+
+        }
+
+        return $this->render('admin/add.article.html.twig', ['form' => $form->createView()]);
     }
 }

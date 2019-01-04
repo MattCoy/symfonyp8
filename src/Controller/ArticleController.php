@@ -5,7 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Article;
-use App\Form\ArticleType;
+use App\Form\ArticleUserType;
 use Symfony\Component\HttpFoundation\Request;
 
 class ArticleController extends AbstractController
@@ -39,11 +39,8 @@ class ArticleController extends AbstractController
 
     	//pour pouvoir sauvegarder un objet = insérer les infos dans la table, on utilise l'entity manager
     	$entityManager = $this->getDoctrine()->getManager();
-
-    	//on crée notre objet article, pour l'instant en dur
-    	$article = new Article();
     	
-        $form = $this->createForm(ArticleType::class);
+        $form = $this->createForm(ArticleUserType::class);
 
         $form->handleRequest($request);
 
