@@ -61,7 +61,8 @@ class ArticleRepository extends ServiceEntityRepository
         $connexion = $this->getEntityManager()->getConnection();
         //on stocke la requête dans une variable
         $sql = '
-            SELECT * FROM article 
+            SELECT a.id as idArticle, title, content, date_publi, u.* FROM article a INNER JOIN user u
+            ON a.user_id = u.id 
             WHERE date_publi > :datePost 
             ORDER BY date_publi DESC
         ';
@@ -83,12 +84,32 @@ class ArticleRepository extends ServiceEntityRepository
     public function findAllPostedAfter2($datePost){
 
         $queryBuilder = $this->createQueryBuilder('a')
+            ->innerJoin('a.user', 'u')
+            ->addSelect('u')
             ->andWhere('a.date_publi > :datePost')
             ->setParameter('datePost', $datePost)
             ->orderBy('a.date_publi', 'DESC')
             ->getQuery();
 
         return $queryBuilder->execute();
+
+    }
+
+    /*
+    méthode qui va me permettre de récupérer ma liste d'articles et mes utilisateurs en une seule requête, en faisant une jointure
+    */
+    public function myFindAll(){
+
+        $querybuilder = $this->createQueryBuilder('a')
+                        //je fais la jointure
+                        //a.user représent la propriété user de mon entité article
+                        ->innerJoin('a.user', 'u')
+                        //on récupère ici les données de l'utilisateur associé  l'article
+                        ->addSelect('u')
+                        ->orderBy('a.date_publi', 'DESC')
+                        ->getQuery();
+
+        return $querybuilder->execute();
 
     }
 }

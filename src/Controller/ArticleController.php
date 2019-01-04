@@ -21,7 +21,8 @@ class ArticleController extends AbstractController
         // $articleDB = new ArticleDB();
         //$articles = $articleDB->findAll()
         $repository = $this->getDoctrine()->getRepository(Article::class);
-        $articles = $repository->findAll();
+        //utilisation de la méthode custom qui fait une jointure
+        $articles = $repository->myFindAll();
 
         return $this->render('article/index.html.twig', [
             'articles' => $articles,
@@ -32,6 +33,10 @@ class ArticleController extends AbstractController
     *@Route("/article/add", name="addArticle")
     */
     public function addArticle(Request $request){
+
+        //seul un utilisateur connecté peut ajouter un article
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
     	//pour pouvoir sauvegarder un objet = insérer les infos dans la table, on utilise l'entity manager
     	$entityManager = $this->getDoctrine()->getManager();
 
@@ -45,6 +50,10 @@ class ArticleController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
 
             $article = $form->getData();
+            //l'auteur de l'article est l'utilisateur connecté
+            $article->setUser($this->getUser());
+            //je fixe la date de publication de l'article
+            $article->setDatePubli(new \DateTime(date('Y-m-d H:i:s')));
 
             $entityManager->persist($article);
 

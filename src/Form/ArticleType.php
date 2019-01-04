@@ -18,8 +18,6 @@ class ArticleType extends AbstractType
         $builder
             ->add('title', TextType::class)
             ->add('content', TextareaType::class)
-            ->add('date_publi', DateTimeType::class)
-            ->add('author', TextType::class)
             ->add('enregistrer', SubmitType::class)
         ;
     }

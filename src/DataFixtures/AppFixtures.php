@@ -21,7 +21,8 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-
+        //tableau qui va contenir mes objets User
+        $users = [];
         //création de 5 users
         for($i=1;$i<=5;$i++){
 
@@ -42,6 +43,8 @@ class AppFixtures extends Fixture
 
             $manager->persist($user);
 
+            //je rempli mon tableau users
+            $users[] = $user;
         }
 
         //on va créer 10 catégories
@@ -67,12 +70,10 @@ class AppFixtures extends Fixture
     		//formatage du timestamp en date
     		$randomDate = date('Y-m-d H:i:s', $timestamp);
 
-    		$article->SetDatePubli(new \DateTime($randomDate));
+    		$article->setDatePubli(new \DateTime($randomDate));
 
-    		//tableau d'auteurs dans lequel on vient piocher au hasard
-    		$auteurs = ['Verlaine', 'Hugo', 'Voltaire', 'Zola', 'Dumas', 'Duras', 'Molière', 'Ribéry'];
     		//array_rand choisit au hasard une clé dans un tableau
-    		$article->setAuthor($auteurs[array_rand($auteurs)]);
+    		$article->setUser($users[array_rand($users)]);
 
     		$manager->persist($article);
 
