@@ -7,6 +7,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Article;
 use App\Form\ArticleUserType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\File;
+use App\Service\FileUploader;
 
 class ArticleController extends AbstractController
 {
@@ -32,7 +34,7 @@ class ArticleController extends AbstractController
     /**
     *@Route("/article/add", name="addArticle")
     */
-    public function addArticle(Request $request){
+    public function addArticle(Request $request, FileUploader $fileuploader){
 
         //seul un utilisateur connecté peut ajouter un article
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -47,6 +49,15 @@ class ArticleController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
 
             $article = $form->getData();
+
+            //$article->getImage() contient un objet qui représent le fichier image envoyé
+            $file = $article->getImage();
+
+            $filename = $file ? $fileuploader->upload($file) : '';
+
+            //je remplace l'attribut imgae qui contient toujours le fichier par le nom du fichier
+            $article->setImage($filename);
+
             //l'auteur de l'article est l'utilisateur connecté
             $article->setUser($this->getUser());
             //je fixe la date de publication de l'article
@@ -106,18 +117,37 @@ class ArticleController extends AbstractController
     /**
     *@Route("article/update/{id}", name="updateArticle", requirements={"id"="\d+"})
     */
-    public function updateArticle(Request $request, Article $article){
+    public function updateArticle(Request $request, Article $article, FileUploader $fileuploader){
+
+        //je stocke le nom du fichier image
+        $filename = $article->getImage();
+
+        //on remplace le nom du fichier par un objet de classe File
+        //pour pouvoir générer le formulaire
+        if($article->getImage()){
+            $article->setImage(new File($this->getParameter('article_image_directory') . '/' . $filename ));
+        }
 
         //pour pouvoir sauvegarder un objet = insérer les infos dans la table, on utilise l'entity manager
         $entityManager = $this->getDoctrine()->getManager();
         
-        $form = $this->createForm(ArticleType::class, $article);
+        $form = $this->createForm(ArticleUserType::class, $article);
 
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
 
             $article = $form->getData();
+
+            //je ne fais le traitement que si une image a été envoyée
+            if($article->getImage()){
+                //je récupère le fichier
+                $file = $article->getImage();
+
+                $filename = $fileuploader->upload($file, $filename);
+            }
+
+            $article->setImage($filename);
 
             $entityManager->flush();
 

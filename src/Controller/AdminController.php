@@ -64,6 +64,14 @@ class AdminController extends AbstractController
 
             $article = $form->getData();
 
+            $file = $article->getImage();
+            //génération du nom du fichier
+            $filename = md5(uniqid()) . '.' . $file->guessExtension();
+            //on transfère le fichier sur le serveur
+            $file->move($this->getParameter('article_image_directory'), $filename);
+            //je remplace l'attribut image qui contient toujours le fichier par le nom du fichier
+            $article->setImage($filename);
+
             $entitymanager = $this->getDoctrine()->getManager();
 
             $entitymanager->persist($article);
@@ -80,12 +88,42 @@ class AdminController extends AbstractController
     */
     public function updateArticle(Request $request, Article $article)
     {
+
+        //on stocke le nom du fichier image au cas où aucun fiochier n'ai été envoyé
+        $fileName = $article->getImage();
+
+        //on doit remplaçer le nom du fichier image par une instance de File représentant le fichier
+        if($article->getImage()) {
+            $article->setImage(
+                new File($this->getParameter('article_image_directory') . '/' . $article->getImage())
+            );
+        }
+
         $form = $this->createForm(ArticleAdminType::class, $article);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
             $article = $form->getData();
+
+            if($article->getImage()) { //on ne fait le traitement de l'upload que si une image a été envoyée
+
+                // $files va contenir l'image envoyée
+                $file = $article->getImage();
+
+                //on génère un nouveau nom
+                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+
+                //on transfère le fichier sur le serveur
+                $file->move(
+                    $this->getParameter('article_image_directory'),
+                    $fileName
+                );
+
+            }
+            // on met à jour la propriété image, qui doit contenir le nom
+            // et pas l'image elle même
+            $article->setImage($fileName);
 
             $entitymanager = $this->getDoctrine()->getManager();
 

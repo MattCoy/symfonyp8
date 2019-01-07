@@ -11,10 +11,18 @@
 		</div>
 	{% endfor %}
 
-
-	<article>
-		<h3>{{ article.title }}</h3>
-		publié dans la catégorie <a href="{{ path('categorie', {id: article.categorie.id}) }}">{{ article.categorie.libelle }}</a>, le {{ article.datepubli|date('d/m/Y') }} par {{ article.user.username }}
-		<p>{{ article.content }}</p>
-	</article>
+	<div class="row">
+		{% if article.image %}
+		<div class="col-md-6">
+			<img class="img-fluid" src="{{ asset('uploads/article/image/' ~ article.image) }}">
+		</div>
+		{% endif %}
+		<div class="col-md-6">
+			<article>
+				<h3>{{ article.title }}</h3>
+				publié dans la catégorie <a href="{{ path('categorie', {id: article.categorie.id}) }}">{{ article.categorie.libelle }}</a>, le {{ article.datepubli|date('d/m/Y') }} par {{ article.user.username }}
+				<p>{{ article.content }}</p>
+			</article>
+		</div>
+	</div>
 {% endblock %}
