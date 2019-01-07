@@ -13,7 +13,9 @@
 
 	{% for categorie in categories %}
 		<p>
+			<a href="{{path("categorie", {id:categorie.id}) }}">
 			{{ categorie.libelle }}
+			</a>
 			<a href="{{ path('updateCategorie', {id: categorie.id}) }}">modifier</a>
 			<a href="{{ path('deleteCategorie', {id: categorie.id}) }}">Supprimer</a>
 		</p>

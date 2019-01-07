@@ -14,7 +14,7 @@
 
 	<article>
 		<h3>{{ article.title }}</h3>
-		publié le {{ article.datepubli|date('d/m/Y') }} par {{ article.user.username }}
+		publié dans la catégorie <a href="{{ path('categorie', {id: article.categorie.id}) }}">{{ article.categorie.libelle }}</a>, le {{ article.datepubli|date('d/m/Y') }} par {{ article.user.username }}
 		<p>{{ article.content }}</p>
 	</article>
 {% endblock %}

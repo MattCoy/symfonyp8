@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ categorie.libelle }}{% endblock %}
+
+{% block body %}
+
+	<p>{{ categorie.libelle }}</p>
+	<p>{{ categorie.description }}</p>
+	<p>Créée le {{ categorie.datecreation|date('d/m/Y') }}</p>
+
+	{# categorie.articles contient un tableau d'articles liés à cette catégorie #}
+	il y a {{ categorie.articles|length }} articles dans cette catégorie
+	<ul>
+		{% for article in categorie.articles %}
+			<li>
+				<a href="{{ path('showArticle', {id:article.id}) }}">
+					{{ article.title}}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+	
+
+{% endblock %}

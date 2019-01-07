@@ -131,4 +131,12 @@ class CategorieController extends AbstractController
 
     }
 
+    /**
+    * @Route("/categorie/{id}", name="categorie", requirements={"id"="\d+"})
+    */
+    public function show(Categorie $categorie)
+    {
+        return $this->render('categorie/show.html.twig', ['categorie' => $categorie]);
+    }
+
 }
