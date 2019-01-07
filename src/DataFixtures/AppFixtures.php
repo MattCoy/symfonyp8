@@ -47,6 +47,7 @@ class AppFixtures extends Fixture
             $users[] = $user;
         }
 
+        $categories = [];
         //on va créer 10 catégories
     	for($i=1;$i<=10;$i++){
 
@@ -56,6 +57,7 @@ class AppFixtures extends Fixture
     		$categorie->setDateCreation(new \DateTime(date('Y-m-d H:i:s')));
 
     		$manager->persist($categorie);
+            $categories[] = $categorie;
     	}
 
     	//création de 30 articles
@@ -74,6 +76,8 @@ class AppFixtures extends Fixture
 
     		//array_rand choisit au hasard une clé dans un tableau
     		$article->setUser($users[array_rand($users)]);
+
+            $article->setCategorie($categories[array_rand($categories)]);
 
     		$manager->persist($article);
 

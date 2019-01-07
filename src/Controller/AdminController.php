@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use App\Form\ArticleAdminType;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Article;
 
 class AdminController extends AbstractController
 {
@@ -71,6 +72,25 @@ class AdminController extends AbstractController
 
         }
 
+        return $this->render('admin/add.article.html.twig', ['form' => $form->createView()]);
+    }
+
+    /**
+    * @Route("admin/article/update/{id}", name="updateArticleAdmin", requirements={"id"="\d+"})
+    */
+    public function updateArticle(Request $request, Article $article)
+    {
+        $form = $this->createForm(ArticleAdminType::class, $article);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $article = $form->getData();
+
+            $entitymanager = $this->getDoctrine()->getManager();
+
+            $entitymanager->flush();
+        }
         return $this->render('admin/add.article.html.twig', ['form' => $form->createView()]);
     }
 }
