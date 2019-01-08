@@ -9,6 +9,8 @@ use App\Form\ArticleUserType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\File;
 use App\Service\FileUploader;
+use App\Form\CommentType;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ArticleController extends AbstractController
 {
@@ -82,18 +84,41 @@ class ArticleController extends AbstractController
     /**
     *@Route("/article/{id}", name="showArticle", requirements={"id"="\d+"})
     */
-    public function showArticle($id){
-
-        $repository = $this->getDoctrine()->getRepository(Article::class);
-        $article = $repository->find($id);
+    public function showArticle(Article $article, Request $request){
 
         //génération d'une erreur si aucun article n'est trouvé
         if(!$article){
             throw $this->createNotFoundException('No article found');
         }
 
+        $commentForm = $this->createForm(CommentType::class);
+        //si on veut restreindre l'ajout de commentaire aux utilisateurs connectés
+        $user = $this->getUser();
+        if($user instanceof UserInterface){            
+
+            $commentForm->handleRequest($request);
+
+            if($commentForm->isSubmitted() && $commentForm->isValid()){
+                $comment = $commentForm->getData();
+                //je dois alors préciser qui est l'auteur du commentaire
+                $comment->setUser($this->getUser());
+                //je décide de l'article auqel il est lié
+                $comment->setArticle($article);
+                //je fixe la date de publi
+                $comment->setDatePubli(new \DateTime(date('Y-m-d H:i:s')));
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($comment);
+                $entityManager->flush();
+            }
+
+        }
+        
+
         return $this->render('article/article.html.twig',
-                                        ['article' => $article]
+                            [
+                                'article' => $article,
+                                'commentForm' => $commentForm->createView()
+                            ]
         );
 
     }
@@ -118,6 +143,8 @@ class ArticleController extends AbstractController
     *@Route("article/update/{id}", name="updateArticle", requirements={"id"="\d+"})
     */
     public function updateArticle(Request $request, Article $article, FileUploader $fileuploader){
+
+        $this->denyAccessUnlessGranted('edit', $article, 'Vous ne pouvez pas modifier cet article');
 
         //je stocke le nom du fichier image
         $filename = $article->getImage();
@@ -165,6 +192,8 @@ class ArticleController extends AbstractController
     *Le param converter : on explique à Symfony que l'on veut convertir directement l'id en objet de classe Article en mettant le nom de la classe dans les parenthèses
     */
     public function deleteArticle(Article $article){
+
+        $this->denyAccessUnlessGranted('delete', $article, 'Vous ne pouvez pas supprimer cet article');
 
         //récupération de l'entity manager, nécessaire pour la suppression
        $entityManager = $this->getDoctrine()->getManager();

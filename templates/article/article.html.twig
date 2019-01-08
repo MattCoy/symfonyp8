@@ -25,4 +25,30 @@
 			</article>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-md-3 offset-md-4">
+			{{ form_start(commentForm) }}
+			{{ form_widget(commentForm) }}
+			{{ form_end(commentForm) }}
+
+			{# affichage des éventuels messages flash #}
+			{% for label, messages in app.flashes %}
+			 	{% for message in messages %}
+			 		<div class="alert alert-{{ label }}">{{ message}}</div>
+			 	{% endfor %}
+			 {% endfor %}
+
+			{# affichage des commentaires #}
+			{% for comment in article.comments %}
+				<p>
+					{{comment.content}}, publié par {{comment.user.username}} le {{ comment.datepubli|date('d/m/Y à H\hi')}}
+
+					{# je n'affiche l'icône de suppression que si je suis l'auteur du commentaire ou si je suis admin #}
+					{% if app.user is same as(comment.user) or is_granted('ROLE_ADMIN') %}
+						| <a href="{{ path('deleteComment', {id: comment.id}) }}"><i class="fas fa-trash"></i></a>
+					{% endif %}
+				</p>
+			{% endfor %}
+		</div>
+	</div>
 {% endblock %}
