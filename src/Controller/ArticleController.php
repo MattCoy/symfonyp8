@@ -53,7 +53,7 @@ class ArticleController extends AbstractController
             //$article->getImage() contient un objet qui représent le fichier image envoyé
             $file = $article->getImage();
 
-            $filename = $file ? $fileuploader->upload($file) : '';
+            $filename = $file ? $fileuploader->upload($file, $this->getParameter('article_image_directory')) : '';
 
             //je remplace l'attribut imgae qui contient toujours le fichier par le nom du fichier
             $article->setImage($filename);
@@ -125,7 +125,7 @@ class ArticleController extends AbstractController
         //on remplace le nom du fichier par un objet de classe File
         //pour pouvoir générer le formulaire
         if($article->getImage()){
-            $article->setImage(new File($this->getParameter('article_image_directory') . '/' . $filename ));
+            $article->setImage(new File($this->getParameter('upload_directory') . $this->getParameter('article_image_directory') . '/' . $filename ));
         }
 
         //pour pouvoir sauvegarder un objet = insérer les infos dans la table, on utilise l'entity manager
@@ -144,7 +144,7 @@ class ArticleController extends AbstractController
                 //je récupère le fichier
                 $file = $article->getImage();
 
-                $filename = $fileuploader->upload($file, $filename);
+                $filename = $fileuploader->upload($file, $this->getParameter('article_image_directory'), $filename);
             }
 
             $article->setImage($filename);

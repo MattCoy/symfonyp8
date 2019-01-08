@@ -8,10 +8,21 @@
     <p>pseudo : {{moi.username}}</p>
     <p>email : {{moi.email}}</p>
 
+    {% if moi.image %}
+        <img src="{{ asset('uploads/user/image/' ~ moi.image) }}">
+    {% endif %}
+
     {# on peut directement accéder à l'utilisateur connecté dans n'importe quelle vue twig grâce à app.user #}
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="image" class="form-control">
+        <button class="btn btn-primary">Uploader</button>
+    </form>
     
     <p>Bonjour {{ app.user.username }}, {{ app.user.email }}</p>
     {# si je veux afficher les articles de l'utilisateur #}
+
+
     {% for article in app.user.articles %}
     	<article>
     		{{ article.title}}<br>

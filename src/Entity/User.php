@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -53,6 +54,12 @@ class User implements UserInterface
     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="user")
     */
     private $articles;
+
+    /**
+    * @ORM\Column(type="string")
+    * @Assert\Image
+    */
+    private $image;
 
     public function __construct(){
         //on initialise la propriété articles lors de l'instanciation
@@ -163,5 +170,16 @@ class User implements UserInterface
     public function getArticles(): Collection
     {
         return $this->articles;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+        return $this;
     }
 }
