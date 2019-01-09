@@ -111,8 +111,7 @@ class ArticleController extends AbstractController
                 $entityManager->flush();
             }
 
-        }
-        
+        }        
 
         return $this->render('article/article.html.twig',
                             [
@@ -122,6 +121,51 @@ class ArticleController extends AbstractController
         );
 
     }
+
+
+
+    /**
+    * Route qui va afficher les détails d'un article grâce au slug
+    * @Route("/article/{slug}", name="showArticleWithSlug", requirements={"slug"="[a-z0-9]+(?:-[a-z0-9]+)*"})
+    */
+    public function showArticleWithSlug(Request $request, Article $article){
+
+        //génération d'une erreur si aucun article n'est trouvé
+        if(!$article){
+            throw $this->createNotFoundException('No article found');
+        }
+
+        $commentForm = $this->createForm(CommentType::class);
+        //si on veut restreindre l'ajout de commentaire aux utilisateurs connectés
+        $user = $this->getUser();
+        if($user instanceof UserInterface){            
+
+            $commentForm->handleRequest($request);
+
+            if($commentForm->isSubmitted() && $commentForm->isValid()){
+                $comment = $commentForm->getData();
+                //je dois alors préciser qui est l'auteur du commentaire
+                $comment->setUser($this->getUser());
+                //je décide de l'article auqel il est lié
+                $comment->setArticle($article);
+                //je fixe la date de publi
+                $comment->setDatePubli(new \DateTime(date('Y-m-d H:i:s')));
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($comment);
+                $entityManager->flush();
+            }
+
+        }        
+
+        return $this->render('article/article.html.twig',
+                            [
+                                'article' => $article,
+                                'commentForm' => $commentForm->createView()
+                            ]
+        );
+        
+    }
+
 
     /**
     *@Route("/article/recent", name="showRecentArticles")

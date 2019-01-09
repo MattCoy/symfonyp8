@@ -40,6 +40,7 @@ class AppFixtures extends Fixture
             $plainPassword = 'toto';
             $mdpencoded = $this->encoder->encodePassword($user, $plainPassword);
             $user->setPassword($mdpencoded);
+            $user->setImage('');
 
             $manager->persist($user);
 
@@ -78,6 +79,7 @@ class AppFixtures extends Fixture
     		$article->setUser($users[array_rand($users)]);
 
             $article->setCategorie($categories[array_rand($categories)]);
+            $article->setImage('');
 
     		$manager->persist($article);
 

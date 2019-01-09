@@ -16,7 +16,7 @@
 		<article>
 			<h3>{{ article.title }}</h3>
 			publié par {{ article.user.username }} le {{ article.datepubli|date('d/m/Y') }}
-			<a href="{{ path('showArticle', {id: article.id}) }}">Voir</a> | 
+			<a href="{{ path('showArticleWithSlug', {slug: article.slug}) }}">Voir</a> | 
 			<a href="{{ path('updateArticle', {id: article.id}) }}">Modifier</a> |
 			<a href="{{ path('deleteArticle', {id: article.id}) }}">Supprimer</a>
 		</article>
