@@ -15,6 +15,26 @@ mon fichier base.html.twig se situe à la racine de templates/
 	<h1>page d'accueil</h1>
 	<p>Ceci est la page d'accueil du site</p>
 
+	<div class="row">
+		<div class="col-md-4">
+			<select id="auteur" class="form-control">
+				<option value="0">Choisissez un auteur</option>
+				{% for user in users %}
+				<option value="{{user.id}}">{{user.username}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-md-4" id="result1">
+
+		</div>
+		<div class="col-md-4" id="result2">
+
+		</div>
+	</div>
+
+
+
+
 	{# commentaires twig #}
 
 	{# pour afficher une variable #}
@@ -34,4 +54,53 @@ mon fichier base.html.twig se situe à la racine de templates/
 	#}
 
 	Bonjour {{ nom }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	<script>
+		$("#auteur").on('change', function(){
+
+			let idAuteur = $(this).val();
+			$.ajax({
+
+				type: 'post',
+				url: '{{ path("auteur1") }}',
+				data: 'idAuteur=' + idAuteur,
+				datatype: 'html',
+				success: function(result){
+					$("#result1").html(result);
+				},
+				error: function(error){
+					console.log(error);
+				}
+
+			})
+			//je génère ma route avec un id 0
+			let path = '{{ path('auteur2', {id:0}) }}';
+			//lorsque l'utilisateur choisit un auteur, je remplace l'id 0 par le bon id
+			path = path.replace(0, idAuteur);
+			//console.log(path);
+			$.ajax({
+				type: 'get',
+				url: path,
+				datatype: 'json',
+				success: function(json){
+					//console.log(json);
+					if(json.status === "ok"){
+						$("#result2").empty();
+						$.each(json.articles, function(i, article){
+$("#result2").append($("<article>").html(article.title + " publié le " + article.date_publi + ", <a href='" + article.url + "'>voir</a>"));
+						})
+					}
+					
+				},
+				error: function(error){
+					console.log(error);
+				}
+			})
+
+		})
+	</script>
 {% endblock %}

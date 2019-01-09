@@ -13,6 +13,7 @@ class CommentController extends AbstractController
      */
     public function delete(Comment $comment)
     {
+    	$this->denyAccessUnlessGranted('delete', $comment);
     	//je récupère l'id de l'article associé pour la redirection
     	$idArticle = $comment->getArticle()->getId();
         $entityManager = $this->getDoctrine()->getmanager();
