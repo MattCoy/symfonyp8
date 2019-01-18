@@ -15,6 +15,7 @@
 		{% if article.image %}
 		<div class="col-md-6">
 			<img class="img-fluid" src="{{ asset('uploads/article/image/' ~ article.image) }}">
+
 		</div>
 		{% endif %}
 		<div class="col-md-6">
@@ -23,6 +24,12 @@
 				publié dans la catégorie <a href="{{ path('categorie', {id: article.categorie.id}) }}">{{ article.categorie.libelle }}</a>, le {{ article.datepubli|date('d/m/Y') }} par {{ article.user.username }}
 				<p>{{ article.content }}</p>
 			</article>
+			<div>
+				{# affichage de la liste des tags associés à cet article #}
+				{% for tag in article.tags %}
+					<span class="badge badge-secondary">{{ tag.libelle}}</span>
+				{% endfor %}
+			</div>
 		</div>
 	</div>
 	<div class="row">
@@ -41,7 +48,7 @@
 			{# affichage des commentaires #}
 			{% for comment in article.comments %}
 				<p>
-					{{comment.content}}, publié par {{comment.user.username}} le {{ comment.datepubli|date('d/m/Y à H\hi')}}
+					{{ comment.content|truncate(20, true, "...voir plus") }}, publié par {{comment.user.username}} le {{ comment.datepubli|date('d/m/Y à H:i')}}
 
 					{# je n'affiche l'icône de suppression que si je suis l'auteur du commentaire ou si je suis admin #}
 					{% if app.user is same as(comment.user) or is_granted('ROLE_ADMIN') %}

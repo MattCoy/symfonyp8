@@ -35,3 +35,6 @@ services:
         arguments:
             #fait référence à notre paramètre créé plus haut
             $targetDirectory: '%upload_directory%'
+
+
+    App\Service\JsonArticleGenerator:

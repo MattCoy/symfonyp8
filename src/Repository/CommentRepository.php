@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Comment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\User;
 
 /**
  * @method Comment|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +48,21 @@ class CommentRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function antispam(User $user, \DateTime $date_publi){
+        
+        $date_publi->modify('-1 minutes');
+
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.user', 'u')
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('c.date_publi > :datep')            
+            ->setParameter('datep', $date_publi)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+
+    }
 }

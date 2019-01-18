@@ -8,6 +8,7 @@ use App\Entity\Categorie;
 use App\Entity\Article;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use App\Entity\Tag;
 
 class AppFixtures extends Fixture
 {
@@ -48,6 +49,20 @@ class AppFixtures extends Fixture
             $users[] = $user;
         }
 
+        //création des tags
+        $tags = ['bon', 'mauvais', 'pas mal', 'moyennasse', 'brillant', 'moche', 'insipide', 'sympa', 'génial', 'stupide'];
+        foreach($tags as $nom){
+
+            $tag = new Tag();
+            $tag->setLibelle($nom);
+            $manager->persist($tag);
+            //je rempli un tableau de tags
+            $tagTab[] = $tag;
+
+        }
+
+
+
         $categories = [];
         //on va créer 10 catégories
     	for($i=1;$i<=10;$i++){
@@ -61,8 +76,13 @@ class AppFixtures extends Fixture
             $categories[] = $categorie;
     	}
 
+        //on crée un tableau qui va référence les tags liés aux articles
+        $tagsAlreadyLinked = [];
+
     	//création de 30 articles
     	for ($i=1;$i<=30;$i++){
+
+            $tagsAlreadyLinked[$i] = [];
 
     		$article = new Article();
     		$article->setTitle('Titre' . $i);
@@ -80,6 +100,19 @@ class AppFixtures extends Fixture
 
             $article->setCategorie($categories[array_rand($categories)]);
             $article->setImage('');
+
+            //association avec les tags
+            $nb = rand(0,5); //au hasard le nb de tags associés à l'article
+            for($j=1;$j<=$nb;$j++){
+                //je récupère au hasard un tag pour chaque tour de boucle
+                $tag = $tagTab[array_rand($tagTab)];
+                //s'il n'est pas déjà lié à cet article, on le rajoute
+                if(!in_array($tag, $tagsAlreadyLinked[$i])){
+                    //je mémorise le fait que ce tag est lié à cet article
+                    $tagsAlreadyLinked[$i][] = $tag;
+                    $article->addTag($tag);
+                }
+            }
 
     		$manager->persist($article);
 

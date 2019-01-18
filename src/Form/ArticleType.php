@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Article;
 use App\Entity\Categorie;
+use App\Entity\Tag;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,6 +25,12 @@ class ArticleType extends AbstractType
             ->add('categorie', EntityType::class,[
                 'class' => Categorie::class,
                 'choice_label' => 'libelle'
+            ])
+            ->add('tags', EntityType::class, [
+                'class' => Tag::class,
+                'multiple' => true,
+                'required' => false,
+                'choice_label' =>'libelle'
             ])
             ->add('image', FileType::class, ['required' => false])
         ;
